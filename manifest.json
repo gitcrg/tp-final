@@ -1,0 +1,7 @@
+{
+  "name": "tp-final",
+  "short_name": "tp-final",
+  "description": "Trabajo final de taller Web Polimer",
+  "start_url": "/",
+  "display": "standalone"
+}

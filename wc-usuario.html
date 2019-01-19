@@ -1,0 +1,111 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-spinner/paper-spinner.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
+
+<link rel="import" href="../wc-lenguajes/wc-lenguajes.html">
+
+<dom-module id="wc-usuario">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+
+    <paper-input autofocus name="usu" value="{{usu}}" label="Usuario" on-keypress="_keyPressed"></paper-input>
+    <paper-button type="submit" raised on-click="_buscar">Buscar</paper-button>
+    <paper-button type="submit" raised on-click="_limpiar">Limpiar</paper-button>
+
+    <iron-ajax
+      id="elajax"
+      url="https://techcodewars.herokuapp.com/api/v1/users/[[usu]]"
+      handle-as="json"
+      last-response="{{usuario}}"
+      loading="{{loading}}"
+      on-request="handleRequest"
+      on-response="handleResponse"
+      on-error="handleError">
+    </iron-ajax>
+
+    <paper-spinner class="spinner" active="[[loading]]"></paper-spinner>
+
+    <iron-collapse opened=[[abrecierra]]>
+      <h3>Datos Generales del Usuario...</h3>
+      <ul>
+        <li>Nombre de Usuario..: [[usuario.username]]</li>
+        <li>Skills.............: [[usuario.skills]]</li>
+        <li>Ranking Global.....: [[usuario.leaderboardPosition]]</li>
+      </ul>
+
+      <wc-lenguajes lenguajes-obj="[[usuario.ranks.languages]]"></wc-lenguajes>
+
+    </iron-collapse>
+
+  </template>
+
+  <script>
+    /**
+     * @customElement
+     * @polymer
+     */
+    class WcUsuario extends Polymer.Element {
+      static get is() { return 'wc-usuario';}
+      static get properties() {
+        return {
+          usuario: {
+            type: Object,
+            notify: true
+          },
+          loading: {
+            type: Boolean,
+            value: false
+          },
+          abrecierra: {
+            type: Boolean,
+            value: false
+          }
+         };
+      }
+
+      _keyPressed(event) {
+        if ((event.which == 13 || event.keyCode == 13)
+            && (this.usu)) {
+          this._buscar();
+        }
+    
+      }
+      
+      _buscar(){
+        if (this.usu) {
+        this.$.elajax.generateRequest();
+        }
+      }
+
+      _limpiar(){
+        window.location.reload();
+      }
+
+      handleResponse(e){
+        if(this.usuario.username != undefined){
+          this.abrecierra = true;
+        } else {
+          alert("Usuario no encontrado");
+        }
+      }
+
+      handleRequest(e){
+      }
+
+      handleError(e){
+      }
+   }
+
+    window.customElements.define(WcUsuario.is, WcUsuario);
+
+  </script>
+</dom-module>
+
+

@@ -1,0 +1,37 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../wc-usuario/wc-usuario.html">
+<link rel="import" href="../wc-katas/wc-katas.html">
+
+<dom-module id="tp-final-app">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+
+    <wc-usuario usuario="{{usuario}}"></wc-usuario>
+
+    <wc-katas usr="[[usuario.username]]"></wc-katas>
+
+  </template>
+
+  <script>
+    /**
+     * @customElement
+     * @polymer
+     */
+    class TpFinalApp extends Polymer.Element {
+      static get is() { return 'tp-final-app'; }
+      static get properties() {
+        return {
+        };
+      }
+    }
+
+    window.customElements.define(TpFinalApp.is, TpFinalApp);
+  </script>
+</dom-module>
+
+

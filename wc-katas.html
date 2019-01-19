@@ -1,0 +1,154 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/polymer/lib/elements/dom-repeat.html">
+<link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
+
+<link rel="import" href="../wc-kata-det/wc-kata-det.html">
+
+<dom-module id="wc-katas">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+
+    </style>
+  
+    <iron-ajax
+      id="elajax"
+      url="https://techcodewars.herokuapp.com/api/v1/users/[[usr]]/code-challenges/completed"
+      handle-as="json"
+      last-response="{{katas}}"
+      on-request="handleRequest"
+      on-response="handleResponse"
+      on-error="handleError">
+    </iron-ajax>
+
+
+    <iron-collapse opened=[[abrecierra]]>
+
+      <h3>Ultimos Katas completados...</h3>
+
+      <paper-input
+        name="filtro"
+        label="filtrar leguajes..."
+        value="{{searchString}}"
+        required>
+      </paper-input>
+
+      <template is="dom-repeat" items="[[katasmostrar]]">
+          <wc-kata-det kata=[[item]]> </wc-kata-det>
+      </template>
+    </iron-collapse>
+
+  </template>
+
+  <script>
+    /**
+     * @customElement
+     * @polymer
+     */
+    class WcKatas extends Polymer.Element {
+      static get is() { return 'wc-katas'; }
+      static get properties() {
+        return {
+          usr: {
+            type: String,
+            observer: '_buscar'
+          },
+          katas: {
+            type: Object,
+            notify: true,
+            observer: '_mostrar'
+          },
+          abrecierra: {
+            type: Boolean,
+            value: false
+          },
+          cantidadFilrada: {
+            type: Number,
+            value: 5
+          },
+          katasmostrar: {
+            type: Array
+            //notify: true
+          },
+          searchString: {
+            type: String,
+            observer: '_mostrar'
+          },
+      };
+    }
+
+      _buscar(valorNuevo,valorAnterior){
+        this.$.elajax.generateRequest();
+     }
+
+      handleResponse(e){
+          this.abrecierra = true;
+      }
+
+      handleRequest(e){
+      }
+
+      handleError(e){
+      }
+
+      _mostrar (valorNuevo,valorAnterior){
+        if(this.katas){
+          this.katasmostrar = this.funFilter();
+        };
+      }
+
+      funFilter(){
+        let x = this.filtroleng();
+        let y = [];
+        x.sort(function (a, b) {
+            if (a.completedAt < b.completedAt) {
+                return 1;
+            }
+            if (a.completedAt > b.completedAt) {
+                return -1;
+            }
+            return 0;
+            });
+        y = x.slice(0,this.cantidadFilrada);
+        return y;
+      }
+
+      filtroleng(){
+        let arraux = [];
+        let str = this.searchString;
+        if (!str) {
+          if(this.katas){
+            arraux = this.katas.data;
+          };
+        } else {
+          str = str.toLowerCase();
+            
+            if(this.katas){
+
+            arraux = this.katas.data.filter(function (item) {
+              let strl = item.completedLanguages.toString();
+              let rgxp = new RegExp(str.toLowerCase(), "gi");
+              return Array.isArray(strl.match(rgxp)) && strl.match(rgxp).length > 0
+            });
+            /*for(let idx = 0;idx<this.katas.data.length;idx++){
+              var k = this.katas.data[idx].completedLanguages;
+              if (k.find(lang => lang.toLowerCase() == str.toLowerCase())){
+                arraux.push(this.katas.data[idx]);
+              }
+            }*/
+          };
+        }
+        return arraux;
+      }
+
+
+    }
+
+    window.customElements.define(WcKatas.is, WcKatas);
+  </script>
+</dom-module>
+
+

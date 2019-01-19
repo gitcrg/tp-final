@@ -1,0 +1,20 @@
+{
+  "name": "tp-final",
+  "description": "Trabajo final de taller Web Polimer",
+  "main": "index.html",
+  "dependencies": {
+    "polymer": "Polymer/polymer#^2.0.0",
+    "iron-ajax": "PolymerElements/iron-ajax#2",
+    "paper-button": "PolymerElements/paper-button#2",
+    "paper-input": "PolymerElements/paper-input#2",
+    "paper-spinner": "PolymerElements/paper-spinner#2",
+    "iron-collapse": "PolymerElements/iron-collapse#2"
+  },
+  "devDependencies": {
+    "web-component-tester": "Polymer/web-component-tester#^6.0.0",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^1.0.0"
+  },
+  "resolutions": {
+    "paper-input": "2"
+  }
+}

@@ -1,0 +1,96 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-spinner/paper-spinner.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
+
+
+<dom-module id="wc-kata-det">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+
+      .katadiv :hover {
+        background-color:powderblue
+      }
+      
+    </style>
+
+    <iron-ajax
+      id="elajax"
+      url="https://techcodewars.herokuapp.com/api/v1/code-challenges/[[kata.id]]"
+      handle-as="json"
+      last-response="{{katadet}}"
+      loading="{{loading}}"
+      on-request="handleRequest"
+      on-response="handleResponse"
+      on-error="handleError">
+    </iron-ajax>
+
+    <paper-spinner class="spinner" active="[[loading]]"></paper-spinner>
+
+        <div class="katadiv" on-click="_buscar">
+            <ul>
+              <li>id fecha: <span>[[kata.completedAt]]</span></li> 
+              <li>id kata: <span>[[kata.id]]</span></li>
+              <li>name kata: <span>[[kata.name]]</span></li>
+              <li>lenguaje: <span>[[kata.completedLanguages]]</span></li>
+            </ul>
+            <iron-collapse opened=[[abrecierra]]>
+              <div>DESCRIPCION...[[katadet.description]]</div>
+            </iron-collapse>
+        </div>
+
+  </template>
+
+  <script>
+    /**
+     * @customElement
+     * @polymer
+     */
+    class WcKataDet extends Polymer.Element {
+      static get is() { return 'wc-kata-det';}
+      static get properties() {
+        return {
+          kata: {
+            type: Object
+            //notify: true
+          },
+          abrecierra: {
+            type: Boolean,
+            value: false
+          },
+          katadet: {
+            type: Object,
+            notify: true
+          },
+         };
+      }
+
+      _buscar(){
+        if(this.abrecierra){
+          this.abrecierra = false
+        } else {
+          this.$.elajax.generateRequest();
+        }
+      }
+
+      handleResponse(e){ this.abrecierra = true;
+      }
+
+      handleRequest(e){
+      }
+
+      handleError(e){
+      }
+
+   }
+
+    window.customElements.define(WcKataDet.is, WcKataDet);
+
+  </script>
+</dom-module>
+
+

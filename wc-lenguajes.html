@@ -1,0 +1,65 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/polymer/lib/elements/dom-repeat.html">
+
+<dom-module id="wc-lenguajes">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+
+    <h3> Detalle de Lenguajes...</h3>
+
+    <template is="dom-repeat" items="[[lenguajesArr]]" as="larr">
+        <ul>lenguaje:[[larr.leng]]
+           <li>ranking : [[larr.rank]]</li>
+           <li>nombre  : [[larr.name]]</li>
+        </ul>
+    </template>
+
+  </template>
+
+  <script>
+    /**
+     * @customElement
+     * @polymer
+     */
+    class WcLenguajes extends Polymer.Element {
+      static get is() { return 'wc-lenguajes'; }
+      static get properties() {
+        return {
+          lenguajesObj: {
+            type: Object
+            //notify: true
+          },
+          lenguajesArr: {
+            type: Array,
+            //notify: true,
+            computed: "_pasarObjArr(lenguajesObj)"
+          }
+        };
+      }
+
+      _pasarObjArr(lenguajesObj){
+        var arr1 = Object.getOwnPropertyNames(lenguajesObj);
+        var arr2 = [];
+        for(let i=0;i<arr1.length;i++){
+              arr2[i]=lenguajesObj[arr1[i]];
+        }
+        let ret = [];
+        for(let j=0;j<arr2.length;j++){
+          let obj = new Object();
+          obj=arr2[j];
+          obj.leng=arr1[j];
+          ret[j]=obj;
+        }
+        return ret;
+      }
+    }
+
+    window.customElements.define(WcLenguajes.is, WcLenguajes);
+  </script>
+</dom-module>
+
+
